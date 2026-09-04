@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mortgage lead generation portfolio system demo">
+    <title>Mortgage Consultation | Portfolio Demo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="container header-inner">
+        <div class="brand">
+            <div class="brand-name">MORTGAGE<span>CONNECT</span></div>
+            <div class="brand-subtitle">Portfolio Demo</div>
+        </div>
+        <div class="header-label">Mortgage Lead Generation</div>
+    </div>
+</header>
+
+<main>
+
+<section class="hero">
+    <div class="container hero-grid">
+
+        <div class="hero-content">
+            <div class="eyebrow">MORTGAGE CONSULTATION</div>
+
+            <h1>Let's find the right mortgage solution for you.</h1>
+
+            <p class="hero-text">
+                Tell us a little about what you're looking for.
+                A mortgage professional can review your request and
+                follow up with the next steps.
+            </p>
+
+            <div class="feature-list">
+                <div class="feature">
+                    <strong>Simple intake</strong>
+                    <span>Easy lead capture for prospective borrowers.</span>
+                </div>
+
+                <div class="feature">
+                    <strong>Fast lead routing</strong>
+                    <span>Requests move into the automation workflow.</span>
+                </div>
+
+                <div class="feature">
+                    <strong>n8n ready</strong>
+                    <span>Webhook based backend automation.</span>
+                </div>
+
+                <div class="feature">
+                    <strong>CRM connected</strong>
+                    <span>Structured lead data prepared for downstream systems.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-label">REQUEST A CONSULTATION</div>
+                <h2>Tell us about your needs</h2>
+                <p>
+                    Complete the form and we'll route your request
+                    to the appropriate mortgage professional.
+                </p>
+            </div>
+
+            <form id="leadForm">
+
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="John Doe"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="john@example.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Property Address</label>
+                    <input
+                        type="text"
+                        id="address"
+                        name="address"
+                        placeholder="123 Main Street, Dallas, TX"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="service">What can we help you with?</label>
+                    <select id="service" name="service" required>
+                        <option value="">Select a service</option>
+                        <option value="Purchase">Home Purchase</option>
+                        <option value="Refinance">Refinance</option>
+                        <option value="Pre-Approval">Pre-Approval</option>
+                        <option value="Investment Property">Investment Property</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="note">How can we help you?</label>
+                    <textarea
+                        id="note"
+                        name="note"
+                        rows="5"
+                        placeholder="Tell us anything you'd like our mortgage team to know..."
+                    ></textarea>
+                </div>
+
+                <button type="submit" id="submitButton">
+                    Submit My Request
+                </button>
+
+                <div id="success" class="success-message" role="status"></div>
+
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<section class="workflow-section">
+    <div class="container">
+        <div class="section-label">BEHIND THE FORM</div>
+
+        <h2>One simple form. An automated lead workflow.</h2>
+
+        <p class="section-description">
+            The front end stays simple for the prospect while the backend
+            captures the request for downstream automation.
+        </p>
+
+        <div class="workflow">
+
+            <div class="workflow-step">
+                <span>01</span>
+                <strong>Capture</strong>
+                <p>Prospect submits consultation request.</p>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+                <span>02</span>
+                <strong>Webhook</strong>
+                <p>Website sends structured JSON to n8n.</p>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+                <span>03</span>
+                <strong>Validate</strong>
+                <p>Required fields and email are checked.</p>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+                <span>04</span>
+                <strong>CRM</strong>
+                <p>Qualified lead data moves downstream.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="architecture-section">
+    <div class="container">
+        <div class="section-label">SYSTEM ARCHITECTURE</div>
+
+        <h2>From website inquiry to operational workflow.</h2>
+
+        <div class="architecture">
+            <div>WEBSITE FORM</div>
+            <span>→</span>
+            <div>n8n WEBHOOK</div>
+            <span>→</span>
+            <div>VALIDATE LEAD</div>
+            <span>→</span>
+            <div>STRUCTURE DATA</div>
+            <span>→</span>
+            <div>CRM</div>
+            <span>→</span>
+            <div>FOLLOW UP</div>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>
+            Sample portfolio website. No real loan application is being submitted.
+        </p>
+        <p>
+            Built as a mortgage lead generation and workflow automation demonstration.
+        </p>
+    </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>
