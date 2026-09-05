@@ -18,7 +18,10 @@ leadForm.addEventListener("submit", async function (event) {
         down_payment_range: document.getElementById("down_payment_range").value,
         employment_status: document.getElementById("employment_status").value,
         first_time_buyer: document.getElementById("first_time_buyer").value,
-        desired_timeline: document.getElementById("desired_timeline").value
+        desired_timeline: document.getElementById("desired_timeline").value,
+        contact_phone: document.getElementById("contact_phone").value.trim(),
+        preferred_contact_method: document.getElementById("preferred_contact_method").value,
+        best_time_to_contact: document.getElementById("best_time_to_contact").value
     };
 
     submitButton.disabled = true;
