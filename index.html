@@ -126,6 +126,61 @@
                     ></textarea>
                 </div>
 
+                <div class="form-group">
+                    <label for="estimated_property_value">Estimated Property Value</label>
+                    <input
+                        type="number"
+                        id="estimated_property_value"
+                        name="estimated_property_value"
+                        placeholder="e.g. 350000"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="down_payment_range">Estimated Down Payment</label>
+                    <select id="down_payment_range" name="down_payment_range">
+                        <option value="">Select a range</option>
+                        <option value="Less than 5%">Less than 5%</option>
+                        <option value="5–10%">5–10%</option>
+                        <option value="10–20%">10–20%</option>
+                        <option value="20%+">20%+</option>
+                        <option value="Not sure">Not sure</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="employment_status">Employment Status</label>
+                    <select id="employment_status" name="employment_status">
+                        <option value="">Select employment status</option>
+                        <option value="Employed (W-2)">Employed (W-2)</option>
+                        <option value="Self-Employed">Self-Employed</option>
+                        <option value="Retired">Retired</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="first_time_buyer">Are you a first-time homebuyer?</label>
+                    <select id="first_time_buyer" name="first_time_buyer">
+                        <option value="">Select an option</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                        <option value="Not applicable">Not applicable</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="desired_timeline">When are you looking to move forward?</label>
+                    <select id="desired_timeline" name="desired_timeline">
+                        <option value="">Select a timeline</option>
+                        <option value="Immediately">Immediately</option>
+                        <option value="1–3 months">1–3 months</option>
+                        <option value="3–6 months">3–6 months</option>
+                        <option value="6+ months">6+ months</option>
+                        <option value="Just exploring">Just exploring</option>
+                    </select>
+                </div>
+
                 <button type="submit" id="submitButton">
                     Submit My Request
                 </button>

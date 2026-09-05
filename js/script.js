@@ -13,7 +13,12 @@ leadForm.addEventListener("submit", async function (event) {
         email: document.getElementById("email").value.trim(),
         address: document.getElementById("address").value.trim(),
         service: document.getElementById("service").value,
-        note: document.getElementById("note").value.trim()
+        note: document.getElementById("note").value.trim(),
+        estimated_property_value: document.getElementById("estimated_property_value").value,
+        down_payment_range: document.getElementById("down_payment_range").value,
+        employment_status: document.getElementById("employment_status").value,
+        first_time_buyer: document.getElementById("first_time_buyer").value,
+        desired_timeline: document.getElementById("desired_timeline").value
     };
 
     submitButton.disabled = true;
