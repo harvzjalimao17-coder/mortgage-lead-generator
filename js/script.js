@@ -1,5 +1,5 @@
 const N8N_WEBHOOK_URL =
-    "https://n8n-1-111-0-g3nd.onrender.com/webhook-test/mortgage-lead";
+    "https://n8n-1-111-0-g3nd.onrender.com/webhook/mortgage-lead";
 
 const leadForm = document.getElementById("leadForm");
 const submitButton = document.getElementById("submitButton");

@@ -17,11 +17,9 @@ Website Form
 
 ## n8n webhook
 
-The JavaScript currently points to the n8n TEST webhook:
+The JavaScript points to the n8n production webhook:
 
-https://n8n-1-111-0-g3nd.onrender.com/webhook-test/mortgage-lead
-
-Before production deployment, replace the test URL with the n8n production webhook URL and activate the workflow.
+https://n8n-1-111-0-g3nd.onrender.com/webhook/mortgage-lead
 
 ## Netlify
 
