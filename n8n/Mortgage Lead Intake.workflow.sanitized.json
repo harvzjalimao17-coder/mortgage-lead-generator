@@ -1,0 +1,911 @@
+{
+  "name": "Mortgage Lead Intake",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mortgage-lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -656,
+        -80
+      ],
+      "id": "cced0092-b030-442b-93b2-ca14ac16a975",
+      "name": "Webhook",
+      "webhookId": "c694a1f1-ad5e-4d97-9432-38c39483f0f0"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const lead = $json;\n\nconst leadId = `LEAD-${Date.now()}`;\n\nconst propertyValue =\n  String(lead.estimated_property_value || \"\").trim();\n\nreturn {\n  json: {\n    lead_id: leadId,\n\n    name: String(lead.name || \"\").trim(),\n\n    email: String(lead.email || \"\")\n      .trim()\n      .toLowerCase(),\n\n    address: String(lead.address || \"\").trim(),\n\n    service: String(lead.service || \"\").trim(),\n\n    estimated_property_value:\n      propertyValue === \"\" ? null : Number(propertyValue),\n\n    down_payment_range:\n      String(lead.down_payment_range || \"\").trim() || null,\n\n    employment_status:\n      String(lead.employment_status || \"\").trim() || null,\n\n    first_time_buyer:\n      String(lead.first_time_buyer || \"\").trim() || null,\n\n    desired_timeline:\n      String(lead.desired_timeline || \"\").trim() || null,\n\n    contact_phone:\n      String(lead.contact_phone || \"\").trim() || null,\n\n    preferred_contact_method:\n      String(lead.preferred_contact_method || \"\").trim() || null,\n\n    best_time_to_contact:\n      String(lead.best_time_to_contact || \"\").trim() || null,\n\n    note: String(lead.note || \"\").trim(),\n\n    status: \"NEW\",\n\n    source: \"Mortgage Website\"\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        -80
+      ],
+      "id": "d8b7a058-2591-44f0-919f-7f804a8e50fe",
+      "name": "Prepare Lead"
+    },
+    {
+      "parameters": {
+        "tableId": "mortgage_leads",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "lead_id",
+              "fieldValue": "={{ $json.lead_id }}"
+            },
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $json.name }}"
+            },
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $json.email }}"
+            },
+            {
+              "fieldId": "address",
+              "fieldValue": "={{ $json.address }}"
+            },
+            {
+              "fieldId": "service",
+              "fieldValue": "={{ $json.service }}"
+            },
+            {
+              "fieldId": "note",
+              "fieldValue": "={{ $json.note }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "={{ $json.status }}"
+            },
+            {
+              "fieldId": "source",
+              "fieldValue": "={{ $json.source }}"
+            },
+            {
+              "fieldId": "estimated_property_value",
+              "fieldValue": "={{$json.estimated_property_value}}"
+            },
+            {
+              "fieldId": "down_payment_range",
+              "fieldValue": "={{$json.down_payment_range}}"
+            },
+            {
+              "fieldId": "employment_status",
+              "fieldValue": "={{$json.employment_status}}"
+            },
+            {
+              "fieldId": "first_time_buyer",
+              "fieldValue": "={{$json.first_time_buyer}}"
+            },
+            {
+              "fieldId": "desired_timeline",
+              "fieldValue": "={{$json.desired_timeline}}"
+            },
+            {
+              "fieldId": "lead_score",
+              "fieldValue": "={{ $json.lead_score }}"
+            },
+            {
+              "fieldId": "lead_priority",
+              "fieldValue": "={{ $json.lead_priority }}"
+            },
+            {
+              "fieldId": "contact_phone",
+              "fieldValue": "={{$json.contact_phone}}"
+            },
+            {
+              "fieldId": "preferred_contact_method",
+              "fieldValue": "={{$json.preferred_contact_method}}"
+            },
+            {
+              "fieldId": "best_time_to_contact",
+              "fieldValue": "={{$json.best_time_to_contact}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        816,
+        32
+      ],
+      "id": "a97aec1d-3045-4351-8230-c5302c07cd0d",
+      "name": "supabase"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $json.body || $json;\n\nconst requiredFields = [\n  \"name\",\n  \"email\",\n  \"address\",\n  \"service\"\n];\n\nconst missingFields = requiredFields.filter(field => {\n  return (\n    !lead[field] ||\n    String(lead[field]).trim() === \"\"\n  );\n});\n\nconst emailValid =\n  /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(\n    String(lead.email || \"\").trim()\n  );\n\nconst isValid =\n  missingFields.length === 0 &&\n  emailValid;\n\nreturn {\n  json: {\n    ...lead,\n\n    validation: {\n      valid: isValid,\n      missing_fields: missingFields,\n      invalid_email: !emailValid\n    }\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -80
+      ],
+      "id": "97eb4811-a25c-4a16-8bed-847fa71c6be3",
+      "name": "Validate Lead"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "mortgage_leads",
+        "limit": 1,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "email",
+              "condition": "eq",
+              "keyValue": "={{ $json.email }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "a643ca99-f5bb-43b3-88cb-d13598df9ff7",
+      "name": "Check Duplicate",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0e943dca-2cd9-464e-a8bc-fa9e5257d7b2",
+              "leftValue": "={{ !!$json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        192,
+        -80
+      ],
+      "id": "311094ff-123a-4c67-94fb-99431f976f2c",
+      "name": "Duplicate?"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const originalLead = $('Prepare Lead').first().json;\nconst existingLead = $json;\n\nreturn {\n  json: {\n    success: false,\n    status: \"DUPLICATE\",\n    message: \"A lead with this email already exists.\",\n\n    lead_id: existingLead.lead_id,\n    existing_lead_id: existingLead.lead_id,\n\n    name: originalLead.name,\n    email: originalLead.email,\n    address: originalLead.address,\n    service: originalLead.service,\n\n    estimated_property_value:\n      originalLead.estimated_property_value,\n\n    down_payment_range:\n      originalLead.down_payment_range,\n\n    employment_status:\n      originalLead.employment_status,\n\n    first_time_buyer:\n      originalLead.first_time_buyer,\n\n    desired_timeline:\n      originalLead.desired_timeline,\n\n    contact_phone:\n      originalLead.contact_phone,\n\n    preferred_contact_method:\n      originalLead.preferred_contact_method,\n\n    best_time_to_contact:\n      originalLead.best_time_to_contact,\n\n    note: originalLead.note,\n\n    source: originalLead.source\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -192
+      ],
+      "id": "ee4bacfd-9879-492e-b6e9-47556be8a8e4",
+      "name": "Handle Duplicate"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const lead = $('Prepare Lead').first().json;\n\nreturn {\n  json: {\n    ...lead\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        32
+      ],
+      "id": "5f7def37-f96f-4a7c-8db5-314dcd5dea72",
+      "name": "Restore Lead"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        784,
+        -192
+      ],
+      "id": "1e468763-4df0-49e3-9266-762f9077833c",
+      "name": "Duplicate Response"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"status\": \"NEW\",\n  \"message\": \"Thanks. Your request has been received. A mortgage professional will review your information and follow up with you.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1280,
+        32
+      ],
+      "id": "10513ae3-f7f3-4645-8f23-78bdcc224793",
+      "name": "Success Response"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Submitted At": "={{ $now }}",
+            "Lead ID": "={{ $json.lead_id }}",
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Property Address": "={{ $json.address }}",
+            "Service": "={{ $json.service }}",
+            "Client Note": "={{ $json.note }}",
+            "Status": "={{ $json.status }}",
+            "Result": "Accepted",
+            "Source": "={{ $json.source }}",
+            "Estimated Property Value": "={{$json.estimated_property_value}}",
+            "Down Payment Range": "={{$json.down_payment_range}}",
+            "Employment Status": "={{$json.employment_status}}",
+            "First-Time Buyer": "={{$json.first_time_buyer}}",
+            "Desired Timeline": "={{$json.desired_timeline}}",
+            "Lead Score": "={{ $json.lead_score }}",
+            "Lead Priority": "={{ $json.lead_priority }}",
+            "Lead Phone": "={{$json.contact_phone}}",
+            "Preferred Contact Method": "={{$json.preferred_contact_method}}",
+            "Best Time to Contact": "={{$json.best_time_to_contact}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Submitted At",
+              "displayName": "Submitted At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lead ID",
+              "displayName": "Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Address",
+              "displayName": "Property Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estimated Property Value",
+              "displayName": "Estimated Property Value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Down Payment Range",
+              "displayName": "Down Payment Range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Employment Status",
+              "displayName": "Employment Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "First-Time Buyer",
+              "displayName": "First-Time Buyer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Desired Timeline",
+              "displayName": "Desired Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Client Note",
+              "displayName": "Client Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Result",
+              "displayName": "Result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Existing Lead ID",
+              "displayName": "Existing Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lead Score",
+              "displayName": "Lead Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Lead Priority",
+              "displayName": "Lead Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Lead Phone",
+              "displayName": "Lead Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Preferred Contact Method",
+              "displayName": "Preferred Contact Method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Best Time to Contact",
+              "displayName": "Best Time to Contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        32
+      ],
+      "id": "1a66ea91-2432-4b75-a0de-cabab6112b85",
+      "name": "google sheet New Lead"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Submitted At": "={{ $now }}",
+            "Lead ID": "={{ $json.lead_id }}",
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Property Address": "={{ $json.address }}",
+            "Service": "={{ $json.service }}",
+            "Client Note": "={{ $json.note }}",
+            "Status": "={{ $json.status }}",
+            "Result": "Duplicate",
+            "Source": "={{ $json.source }}",
+            "Estimated Property Value": "={{$json.estimated_property_value}}",
+            "Down Payment Range": "={{$json.down_payment_range}}",
+            "Employment Status": "={{$json.employment_status}}",
+            "First-Time Buyer": "={{$json.first_time_buyer}}",
+            "Desired Timeline": "={{$json.desired_timeline}}",
+            "Existing Lead ID": "={{$json.existing_lead_id}}",
+            "Lead Phone": "{{$json.contact_phone}}",
+            "Preferred Contact Method": "{{$json.preferred_contact_method}}",
+            "Best Time to Contact": "{{$json.best_time_to_contact}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Submitted At",
+              "displayName": "Submitted At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lead ID",
+              "displayName": "Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Address",
+              "displayName": "Property Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estimated Property Value",
+              "displayName": "Estimated Property Value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Down Payment Range",
+              "displayName": "Down Payment Range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Employment Status",
+              "displayName": "Employment Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "First-Time Buyer",
+              "displayName": "First-Time Buyer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Desired Timeline",
+              "displayName": "Desired Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Client Note",
+              "displayName": "Client Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Result",
+              "displayName": "Result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Existing Lead ID",
+              "displayName": "Existing Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lead Score",
+              "displayName": "Lead Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Lead Priority",
+              "displayName": "Lead Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Lead Phone",
+              "displayName": "Lead Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Preferred Contact Method",
+              "displayName": "Preferred Contact Method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Best Time to Contact",
+              "displayName": "Best Time to Contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        592,
+        -192
+      ],
+      "id": "461fdb8f-ba58-4fa0-ad64-b5e461a5aa92",
+      "name": "google sheet Duplication"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nconst timelineScores = {\n  \"immediately\": 50,\n  \"1–3 months\": 35,\n  \"3–6 months\": 20,\n  \"6+ months\": 10,\n  \"just exploring\": 0\n};\n\nconst serviceScores = {\n  \"pre-approval\": 30,\n  \"purchase\": 25,\n  \"investment property\": 25,\n  \"refinance\": 15,\n  \"other\": 5\n};\n\nfunction normalize(value) {\n  return (value ?? \"\").toString().trim().toLowerCase();\n}\n\nfunction isNonBlank(value) {\n  return value !== null && value !== undefined && value.toString().trim().length > 0;\n}\n\nfor (const item of items) {\n  const data = item.json;\n\n  const timelineScore = timelineScores[normalize(data.desired_timeline)] ?? 0;\n  const serviceScore = serviceScores[normalize(data.service)] ?? 0;\n\n  let completenessScore = 0;\n  if (isNonBlank(data.estimated_property_value)) completenessScore += 5;\n  if (isNonBlank(data.down_payment_range)) completenessScore += 5;\n  if (isNonBlank(data.employment_status)) completenessScore += 5;\n  if (isNonBlank(data.first_time_buyer)) completenessScore += 5;\n\n  let leadScore = timelineScore + serviceScore + completenessScore;\n  if (leadScore > 100) leadScore = 100;\n\n  let leadPriority;\n  if (leadScore >= 65) {\n    leadPriority = \"HOT\";\n  } else if (leadScore >= 35) {\n    leadPriority = \"WARM\";\n  } else {\n    leadPriority = \"COLD\";\n  }\n\n  results.push({\n    json: {\n      ...data,\n      lead_score: leadScore,\n      lead_priority: leadPriority\n    }\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        32
+      ],
+      "id": "afdc09cc-40d5-4218-ad93-a9d3cf739ec7",
+      "name": "Calculate Lead Priority"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Lead": {
+      "main": [
+        [
+          {
+            "node": "Check Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Lead": {
+      "main": [
+        [
+          {
+            "node": "Prepare Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase": {
+      "main": [
+        [
+          {
+            "node": "google sheet New Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Duplicate": {
+      "main": [
+        [
+          {
+            "node": "Duplicate?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate?": {
+      "main": [
+        [
+          {
+            "node": "Handle Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Restore Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restore Lead": {
+      "main": [
+        [
+          {
+            "node": "Calculate Lead Priority",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle Duplicate": {
+      "main": [
+        [
+          {
+            "node": "google sheet Duplication",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google sheet New Lead": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google sheet Duplication": {
+      "main": [
+        [
+          {
+            "node": "Duplicate Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Lead Priority": {
+      "main": [
+        [
+          {
+            "node": "supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": []
+}
