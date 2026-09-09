@@ -17,6 +17,9 @@
     --success-bg: #edf8f1;
     --success-border: #b9dfc6;
     --success-text: #25633b;
+    --error-bg: #fff4f0;
+    --error-border: #f0c9bd;
+    --error-text: #7a3b2c;
 }
 
 html {
@@ -251,6 +254,12 @@ button:disabled {
     font-size: 13px;
 }
 
+.success-message.is-error {
+    border-color: var(--error-border);
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
 /* WORKFLOW */
 
 .workflow-section {
@@ -352,6 +361,23 @@ button:disabled {
 .architecture span {
     color: var(--gold);
     font-size: 20px;
+}
+
+/* CONTACT / AI MESSAGE */
+
+.contact-section {
+    padding: 90px 0;
+    background: var(--cream);
+}
+
+.contact-card {
+    max-width: 560px;
+    margin-top: 45px;
+    padding: 38px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 24px 70px rgba(13, 27, 42, 0.12);
 }
 
 /* FOOTER */

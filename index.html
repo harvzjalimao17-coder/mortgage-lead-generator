@@ -293,6 +293,65 @@
     </div>
 </section>
 
+<section class="contact-section">
+    <div class="container">
+        <div class="section-label">GET IN TOUCH</div>
+
+        <h2>Prefer a quick message instead?</h2>
+
+        <p class="section-description">
+            Request a call back or send our team a message directly.
+            This is separate from the mortgage consultation form above —
+            no mortgage details required.
+        </p>
+
+        <div class="contact-card">
+            <form id="aiMessageForm" novalidate>
+
+                <div class="form-group">
+                    <label for="ai_name">Full Name</label>
+                    <input
+                        type="text"
+                        id="ai_name"
+                        name="ai_name"
+                        placeholder="John Doe"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="ai_phone">Phone Number</label>
+                    <input
+                        type="tel"
+                        id="ai_phone"
+                        name="ai_phone"
+                        placeholder="(555) 555-5555"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="ai_message">Message</label>
+                    <textarea
+                        id="ai_message"
+                        name="ai_message"
+                        rows="4"
+                        placeholder="What would you like to ask or share?"
+                        required
+                    ></textarea>
+                </div>
+
+                <button type="submit" id="aiSubmitButton">
+                    Send Message
+                </button>
+
+                <div id="aiFormStatus" class="success-message" role="status"></div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
 </main>
 
 <footer class="site-footer">
@@ -307,5 +366,6 @@
 </footer>
 
 <script src="js/script.js"></script>
+<script src="js/ai-message.js"></script>
 </body>
 </html>
