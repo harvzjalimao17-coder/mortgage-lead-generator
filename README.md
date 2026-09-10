@@ -6,6 +6,17 @@ Portfolio demonstration of a mortgage lead generation and workflow automation sy
 
 Static HTML, CSS, and JavaScript.
 
+The page is centered on a single Mortgage Consultation experience: a hero
+section with four feature points (Simple intake, Fast lead routing, n8n
+ready, CRM connected) and a 9-step guided mortgage intake wizard.
+
+The page no longer includes the earlier "Behind the Form," "System
+Architecture," or "Get in Touch" (AI Message form) sections.
+
+`js/ai-message.js` remains in the repository but is no longer loaded by
+`index.html`, since the AI Message form it powered was removed from the
+page.
+
 ## Current workflow
 
 Website Form
