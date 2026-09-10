@@ -425,126 +425,6 @@ button:disabled {
     }
 }
 
-/* WORKFLOW */
-
-.workflow-section {
-    padding: 90px 0;
-    background: var(--white);
-}
-
-.workflow-section h2,
-.architecture-section h2 {
-    max-width: 780px;
-    margin-top: 10px;
-    color: var(--navy);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 42px;
-    line-height: 1.15;
-}
-
-.section-description {
-    max-width: 680px;
-    margin-top: 15px;
-    color: var(--muted);
-}
-
-.workflow {
-    display: flex;
-    align-items: stretch;
-    gap: 15px;
-    margin-top: 45px;
-}
-
-.workflow-step {
-    flex: 1;
-    padding: 25px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: #fbfcfd;
-}
-
-.workflow-step span {
-    display: block;
-    margin-bottom: 12px;
-    color: var(--gold);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1px;
-}
-
-.workflow-step strong {
-    color: var(--navy);
-    font-size: 16px;
-}
-
-.workflow-step p {
-    margin-top: 8px;
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.workflow-arrow {
-    display: flex;
-    align-items: center;
-    color: var(--gold);
-    font-size: 24px;
-    font-weight: 700;
-}
-
-/* ARCHITECTURE */
-
-.architecture-section {
-    padding: 90px 0;
-    background: var(--navy);
-    color: var(--white);
-}
-
-.architecture-section h2 {
-    color: var(--white);
-}
-
-.architecture {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 45px;
-}
-
-.architecture div {
-    padding: 13px 16px;
-    border: 1px solid rgba(198, 161, 91, 0.5);
-    border-radius: 7px;
-    color: var(--gold-light);
-    background: rgba(255, 255, 255, 0.04);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.7px;
-}
-
-.architecture span {
-    color: var(--gold);
-    font-size: 20px;
-}
-
-/* CONTACT / AI MESSAGE */
-
-.contact-section {
-    padding: 90px 0;
-    background: var(--cream);
-}
-
-.contact-card {
-    max-width: 560px;
-    margin-top: 45px;
-    padding: 38px;
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    box-shadow: 0 24px 70px rgba(13, 27, 42, 0.12);
-}
-
 /* FOOTER */
 
 .site-footer {
@@ -572,15 +452,6 @@ button:disabled {
 
     .form-card {
         max-width: 650px;
-    }
-
-    .workflow {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .workflow-arrow {
-        display: none;
     }
 }
 
@@ -616,18 +487,5 @@ button:disabled {
 
     .step-actions {
         gap: 10px;
-    }
-
-    .workflow {
-        grid-template-columns: 1fr;
-    }
-
-    .workflow-section h2,
-    .architecture-section h2 {
-        font-size: 34px;
-    }
-
-    .architecture {
-        justify-content: flex-start;
     }
 }
