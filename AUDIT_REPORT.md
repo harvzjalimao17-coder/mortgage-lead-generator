@@ -158,27 +158,33 @@ Related terms found, all non-functional / unrelated to GHL:
 
 ## 5. AI AGENT / MESSAGING
 
-Every occurrence of `AI`, `agent`, `messaging`, `conversation`, `SMS`, `text`, `OpenAI`, `GPT`, `assistant` was searched across all files.
+Every occurrence of `AI`, `agent`, `messaging`, `conversation`, `SMS`, `text`, `OpenAI`, `GPT`, `assistant` was searched across all files. This section distinguishes what the **repository** contains from what the **live production webhook** was observed to do, since these two turned out to diverge significantly across this session's testing.
 
-**Result: no AI agent, LLM API call, or SMS-sending code exists anywhere in this repository.**
+### Repository
+
+**Result: no AI agent code, LLM API call, or SMS-sending code exists anywhere in this repository, and no specific AI provider/model implementation is present in source.**
 
 | Match | Location | Nature |
 |---|---|---|
 | `AI_MESSAGE_WEBHOOK_URL` | `js/ai-message.js:1` | Just a variable name — no AI processing occurs in this file |
 | `js/ai-message.js` (filename) | `js/ai-message.js` | Filename only |
-| `#aiMessageForm`, `#aiSubmitButton`, `#aiFormStatus` | `index.html:309, 344, 348` | Element IDs, named for the feature, not AI logic |
+| `#aiMessageForm`, `#aiSubmitButton`, `#aiFormStatus` | `index.html` | Element IDs, named for the feature, not AI logic |
 | `/webhook/ai-lead-message` | `js/ai-message.js:2` | Webhook path name only |
 | `type="text"` | `index.html` (multiple) | HTML input type attribute, unrelated to "messaging" |
-| "Text" (option value) | `index.html:200` (`preferred_contact_method`) | A contact-method choice, not an SMS integration |
+| "Text" (option value) | `index.html` (`preferred_contact_method`) | A contact-method choice, not an SMS integration |
 
-No `openai`, `gpt`, `assistant`, `conversation`, or `SMS` string literal exists anywhere in the repo.
+No `openai`, `gpt`, `gemini`, `anthropic`, `assistant`, `conversation`, or `SMS` string literal exists anywhere in the repo. `js/ai-message.js` is a plain frontend POST client: it reads `name`/`phone`/`message`, disables the button, and `fetch()`s that JSON to the URL above, handling only `response.ok` — it never reads the response body. **No AI backend workflow definition or export for `/webhook/ai-lead-message` exists anywhere in this repository** (the only n8n export present, `n8n/Mortgage Lead Intake.workflow.sanitized.json`, documents the unrelated `/webhook/mortgage-lead` path only). Because no such export exists here, no provider/model, prompt, or processing logic behind that endpoint can be inspected from source.
 
-**How the AI-agent messaging flow connects to the lead:** it does not, as far as this repository shows. `js/ai-message.js` is a plain, isolated contact form (`name`, `phone`, `message`) that POSTs JSON to `https://n8n-1-111-0-g3nd.onrender.com/webhook/ai-lead-message`. Per a live production test run in this session's prior turn, that webhook currently returns:
-```
-HTTP/1.1 404 Not Found
-{"code":404,"message":"The requested webhook \"POST ai-lead-message\" is not registered.", ...}
-```
-meaning the corresponding n8n workflow is either not created or not activated on the live n8n instance. No export of that workflow exists under `n8n/` in this repo, so any Gemini/AI-agent/Supabase step that may be intended for it cannot be inspected from source — it would exist, if at all, only on the live n8n instance outside this codebase.
+### Live production (as observed in this session, not from repository source)
+
+Multiple live tests were run directly against `https://n8n-1-111-0-g3nd.onrender.com/webhook/ai-lead-message` in later turns of this session:
+
+- **Currently operational.** Three consecutive identical synthetic POSTs (`{"name":"Demo Borrower","phone":"555-0100","message":"I would like to learn more about mortgage options."}`) each returned `HTTP 200`, `Content-Type: application/json`, and `Access-Control-Allow-Origin: https://demo-lead-generator.netlify.app`. Response times were ~3.90s, ~1.99s, and ~3.80s. A subsequent `OPTIONS` preflight returned `204` with matching `Access-Control-Allow-Origin`/`-Methods`/`-Headers`.
+- **Each response was a distinct record**: every call returned a unique `id` and a distinct, increasing `created_at` timestamp, alongside `customer_name`, `phone`, `original_message`, `intent`, `wants_callback`, and `status` fields.
+- **Reliability is not fully established.** Earlier in this same session, the identical endpoint returned `404 Not Found` ("webhook not registered"), then `502 Bad Gateway`, then `500 Internal Server Error`, before the three consecutive `200`s above. The endpoint should be described as **currently operational, with observed intermittent availability/cold-start-like behavior** — not as durably reliable. A Render free-tier service sleeping/waking is a **plausible inference** consistent with this pattern (the first successful call took ~54s, suggestive of a cold start; the next three were fast), but this has not been confirmed against Render's actual service configuration and should not be stated as a confirmed root cause.
+- **AI provider cannot be verified.** The `intent` field's exact wording varied between calls for the identical input message (e.g. "Inquire about mortgage options" vs. "Learn more about mortgage options"), which suggests some processing or generative step runs server-side rather than a fixed template/lookup. However, **no specific provider or model (OpenAI, GPT, Gemini, Anthropic, or otherwise) can be claimed** — nothing in the repository or in any response body identifies one, and no such workflow export exists here to inspect.
+
+**Net conclusion:** the repository's own contents and the live production endpoint's current behavior are two separate facts that should not be conflated. The repository has no AI backend implementation to show. The live endpoint, independently, is presently returning real structured responses, but its short-term history in this session shows it is not a status that can be assumed permanent without repeated monitoring.
 
 ---
 
