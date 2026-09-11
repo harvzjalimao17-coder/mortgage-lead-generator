@@ -6,16 +6,30 @@ Portfolio demonstration of a mortgage lead generation and workflow automation sy
 
 Static HTML, CSS, and JavaScript.
 
-The page is centered on a single Mortgage Consultation experience: a hero
-section with four feature points (Simple intake, Fast lead routing, n8n
-ready, CRM connected) and a 9-step guided mortgage intake wizard.
+The hero section presents two side-by-side experiences: an AI Lead
+Messaging form on the left, and the 9-step guided mortgage consultation
+wizard on the right.
 
-The page no longer includes the earlier "Behind the Form," "System
-Architecture," or "Get in Touch" (AI Message form) sections.
+The page no longer includes the earlier "Behind the Form" or "System
+Architecture" sections.
 
-`js/ai-message.js` remains in the repository but is no longer loaded by
-`index.html`, since the AI Message form it powered was removed from the
-page.
+## AI Lead Messaging
+
+`index.html` includes an AI Lead Messaging form (`#aiMessageForm`), and
+`js/ai-message.js` is loaded by the page. Submitting the form sends a
+JSON payload (`name`, `phone`, `message`) via `fetch()` directly to:
+
+https://n8n-1-111-0-g3nd.onrender.com/webhook/ai-lead-message
+
+This is a frontend interface only. **No AI backend workflow definition
+exists in this repository** — there is no n8n export for this endpoint,
+and no OpenAI, GPT, GoHighLevel (GHL), or SMS integration is implemented
+anywhere in this codebase. The webhook above would need to be built and
+activated separately on the live n8n instance for this form to receive
+a real response.
+
+This is a separate integration from the mortgage lead intake workflow
+below, which uses its own webhook path and is unrelated to AI messaging.
 
 ## Current workflow
 
@@ -28,7 +42,9 @@ Website Form
 
 ## n8n webhook
 
-The JavaScript points to the n8n production webhook:
+The mortgage consultation wizard (`#leadForm`) points to the n8n
+production webhook for mortgage lead intake — a separate workflow from
+AI Lead Messaging above:
 
 https://n8n-1-111-0-g3nd.onrender.com/webhook/mortgage-lead
 
