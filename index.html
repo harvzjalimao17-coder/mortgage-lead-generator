@@ -25,38 +25,58 @@
 <section class="hero">
     <div class="container hero-grid">
 
-        <div class="hero-content">
-            <div class="eyebrow">MORTGAGE CONSULTATION</div>
-
-            <h1>Let's find the right mortgage solution for you.</h1>
-
-            <p class="hero-text">
-                Tell us a little about what you're looking for.
-                A mortgage professional can review your request and
-                follow up with the next steps.
-            </p>
-
-            <div class="feature-list">
-                <div class="feature">
-                    <strong>Simple intake</strong>
-                    <span>Easy lead capture for prospective borrowers.</span>
-                </div>
-
-                <div class="feature">
-                    <strong>Fast lead routing</strong>
-                    <span>Requests move into the automation workflow.</span>
-                </div>
-
-                <div class="feature">
-                    <strong>n8n ready</strong>
-                    <span>Webhook based backend automation.</span>
-                </div>
-
-                <div class="feature">
-                    <strong>CRM connected</strong>
-                    <span>Structured lead data prepared for downstream systems.</span>
-                </div>
+        <div class="form-card ai-card">
+            <div class="form-header">
+                <div class="form-label">AI LEAD MESSAGING</div>
+                <h2>Ask our AI assistant</h2>
+                <p>
+                    Send a quick message and it's routed straight into our
+                    AI-driven lead messaging workflow — no mortgage details required.
+                </p>
             </div>
+
+            <form id="aiMessageForm" novalidate>
+
+                <div class="form-group">
+                    <label for="ai_name">Full Name</label>
+                    <input
+                        type="text"
+                        id="ai_name"
+                        name="ai_name"
+                        placeholder="John Doe"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="ai_phone">Phone Number</label>
+                    <input
+                        type="tel"
+                        id="ai_phone"
+                        name="ai_phone"
+                        placeholder="(555) 555-5555"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="ai_message">Message</label>
+                    <textarea
+                        id="ai_message"
+                        name="ai_message"
+                        rows="4"
+                        placeholder="What would you like to ask or share?"
+                        required
+                    ></textarea>
+                </div>
+
+                <button type="submit" id="aiSubmitButton">
+                    Send Message
+                </button>
+
+                <div id="aiFormStatus" class="success-message" role="status"></div>
+
+            </form>
         </div>
 
         <div class="form-card">
@@ -297,5 +317,6 @@
 </footer>
 
 <script src="js/script.js"></script>
+<script src="js/ai-message.js"></script>
 </body>
 </html>
